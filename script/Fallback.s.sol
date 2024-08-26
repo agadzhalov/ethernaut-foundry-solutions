@@ -33,6 +33,7 @@ contract FallbackScript is Script {
             // After we are already the owner we can withraw all the ethers
             fallbackContract.withdraw();
             console.log("3. Wallet's balance", vm.envAddress("WALLLET_ADDRESS").balance);
+            console.log("4. Contract's balance", address(fallbackContract).balance);
         }
         vm.stopBroadcast();
     }
