@@ -7,7 +7,8 @@ import "../src/King.sol";
 contract CantReceiveContract {
 
     function becomeKing(address _recepient) external payable {
-        address(_recepient).call{value: 1e15}(""); 
+        (bool success, ) = address(_recepient).call{value: 1e15}(""); 
+        require(success, "call failed");
     }
 
     /**
@@ -38,8 +39,8 @@ contract KingScript is Script {
         cantReceiver.becomeKing(0xb331A36D9bE6452BFfaD52A25A4b578535FEf712);
         console.log("2. New king", king._king());
 
-        (bool isSuccess, ) = address(king).call{value: 1e16}(""); 
-        console.log("3. Still king is", king._king(), "becase response is", isSuccess);
+        (bool success, ) = address(king).call{value: 1e16}(""); 
+        require(success, "Can't become king");
         vm.stopBroadcast();
 
     }
