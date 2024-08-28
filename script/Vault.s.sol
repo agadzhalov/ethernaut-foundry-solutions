@@ -10,6 +10,7 @@ contract VaultScript is Script {
     /**
      * Solution: One slot consists of 32 bytes.
      * bool locked is 1 byte, but bytes32 password is 32 bytes, that's why the password is stored on slot 1
+     * p.s. cast storage contract-adress slot also can be used
      */
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
