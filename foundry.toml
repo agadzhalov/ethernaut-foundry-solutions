@@ -2,6 +2,7 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+evm_version = 'shanghai' # https://github.com/foundry-rs/foundry/issues/4988#issuecomment-1556331314
 
 remappings = [
     "@openzeppelin/=lib/openzeppelin-contracts/",
