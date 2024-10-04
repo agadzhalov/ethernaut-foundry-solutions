@@ -44,6 +44,7 @@ contract StakeScript is Script {
      *    How I know it? I've used online evm bytecode decoder looking at the ABI in order to figure out the methods implemented.
      *    https://app.dedaub.com/decompile.
      *    Hack: we can just approve as many tokens as we want. This is the tricky part of the challange
+     *    Resource: to decode the selectors 0xdd62ed3e and 0x23b872dd you can use https://www.4byte.directory/
      * 3. Since we've already staked ETH and WETH we are already a staker.
      * 4. We execute Stake.Unstake(the total amout we staked (eth + weth))
      * 5. But this way 2. requirement is still not met.
