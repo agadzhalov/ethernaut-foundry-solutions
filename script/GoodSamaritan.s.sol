@@ -42,7 +42,7 @@ contract GoodSamaritanScript is Script {
      * inifinite loop and at some point it will revert with InsufficientBalance
      */
     function run() public {
-        GoodSamaritan samaritan = new GoodSamaritan();
+        GoodSamaritan samaritan = GoodSamaritan(0xA62Fdb09ae65A6EcF22bEf439E4803DCe2574A10);
         Coin coin = Coin(address(samaritan.coin()));
         Wallet wallet = Wallet(address(samaritan.wallet()));
 
