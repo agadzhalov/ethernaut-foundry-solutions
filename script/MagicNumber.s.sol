@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import {Script, console} from "forge-std/Script.sol";
+import {MagicNum} from "../src/MagicNumber.sol";
+
 /**
  * There are some prerequisites we need to know before starting this challange
  * 
@@ -76,3 +81,32 @@
  * 1. https://ethereum.org/en/developers/docs/evm/opcodes/
  * 2. https://www.youtube.com/watch?v=0qQUhsPafJc
  */
+
+contract Attacker {
+
+    MagicNum magicNum;
+    constructor(address _target) {
+        magicNum = MagicNum(_target);
+
+        bytes memory bytecode = hex"69602a60005260206000f3600052600a6016f3";
+        address addr;
+        assembly {
+            // CREATE (value, offset, size)
+            addr := create(0, add(bytecode, 0x20), 0x13)
+        }
+
+        require(addr != address(0), "deploy failed");
+    
+        magicNum.setSolver(addr);
+    }
+}
+
+contract MagicNumberScript is Script {
+    function run() public {
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+
+        Attacker fac = new Attacker(0x6ac5b84DF67D2bd37cbf796B03E770217982e82f);
+
+        vm.stopBroadcast();
+    }
+}
