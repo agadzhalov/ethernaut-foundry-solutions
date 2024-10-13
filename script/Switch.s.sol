@@ -56,6 +56,7 @@ import {Switch} from "../src/Switch.sol";
  * 
  * Resources:
  * https://veridelisi.medium.com/learn-evm-opcodes-v-a59dc7cbf9c9
+ * https://blog.openzeppelin.com/ethereum-in-depth-part-2-6339cf6bddb9
  */
 
 contract Attacker {
