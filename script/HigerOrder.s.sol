@@ -32,7 +32,7 @@ import {Script, console} from "forge-std/Script.sol";
  * =====================================================================================
  * Part 4
  * 
- * The catchy part is if you try to pass the calldata to a contract build using newer version of solidity
+ * The catchy part is if you try to pass the calldata to a contract built using newer version of solidity
  * it's going to revert because uint8 (max n=255) is expected and we are going to pass number 256. But since
  * the Solidity v is 0.6.12 this is possible.
  * 
