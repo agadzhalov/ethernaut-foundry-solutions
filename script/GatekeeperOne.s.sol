@@ -23,6 +23,8 @@ contract Attacker {
 
 }
 
+/// @author agadzhalov
+/// @title Solution to GatekeeperOne Ethernaut challenge
 contract GatekeeperOneScript is Script {
 
     function run() public {
