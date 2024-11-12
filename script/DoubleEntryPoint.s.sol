@@ -55,6 +55,7 @@ interface IDetectionBot {
 
 contract Bot {
     Forta forta; 
+
     constructor(address _fortaAddr) {
         forta = Forta(_fortaAddr);
     }
@@ -67,16 +68,22 @@ contract Bot {
     }
 }
 
+/// @author agadzhalov
+/// @title Solution to DoubleEntryPoint Ethernaut challenge
 contract DoubleEntryPointScript is Script {
 
     function run() public {        
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+
+        // Initialize the `DoubleEntryPoint` and `CryptoVault` interfaces using the provided contract address
         DoubleEntryPoint de = DoubleEntryPoint(0x028dBe4eE020e626A931AF64a390823d915B296F);
         CryptoVault cryptoVault = CryptoVault(de.cryptoVault());
 
+        // Deploy a Bot contract and register it as the detection bot on `forta`
         Bot bot = new Bot(address(de.forta()));
         de.forta().setDetectionBot(address(bot));
 
+        // Attempt to sweep tokens via `cryptoVault` using the detection bot setup
         cryptoVault.sweepToken(IERC20(de.delegatedFrom()));
         vm.stopBroadcast();
     }
