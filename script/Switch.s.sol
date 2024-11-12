@@ -70,6 +70,8 @@ contract Attacker {
     }
 }
 
+/// @author agadzhalov
+/// @title Solution to Switch Ethernaut challenge
 contract SwitchScript is Script {
 
     function run() public {
