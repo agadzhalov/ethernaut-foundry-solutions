@@ -1,66 +1,42 @@
-## Foundry
+# Ethernaut Foundry Solutions by agadzhalov
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Prerequisites
+Before running the scripts, ensure you have the following tools installed:
 
-Foundry consists of:
+- Foundry
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
 ```
 
-### Test
+## Setup
 
-```shell
-$ forge test
+1. `git clone` 
+2. `forge build`
+3. Create `.env` file with your account address and privete key
+
+```
+WALLLET_ADDRESS =
+PRIVATE_KEY = 
 ```
 
-### Format
+## Solutions
+1. All the solutions are in `/script` directory
 
-```shell
-$ forge fmt
+## Solutions explained
+1. You will find comments in every script `.sol` file that are explaining the solution
+
+## How to run scripts
+1. First you must replace the instance address from Ethernaut with your own in the script.
+2. Let's take for example Fallback.s.sol. There you have to replace the address on line 18 with your instance.
+3. You must have an RPC url. You can get one from Alchemy or Infura
+4. In order to execute a script this is the pattern
+
 ```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
+forge script script/NAME_OF_THE_FILE.s.sol:NAME_OF_SCRIPT --rpc-url YOUR_RPC_URL --private-key YOUR_PRIVATE_KEY
 ```
-
-### Anvil
-
-```shell
-$ anvil
+5. To run `script/Fallback.s.sol` you have to execute 
 ```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+forge script Fallback.s.sol:FallbackScript --rpc-url YOUR_RPC_URL --private-key YOUR_PRIVATE_KEY
 ```
