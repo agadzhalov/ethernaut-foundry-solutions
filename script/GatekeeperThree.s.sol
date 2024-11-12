@@ -47,6 +47,8 @@ contract Attacker {
     }
 }
 
+/// @author agadzhalov
+/// @title Solution to GatekeeperThree Ethernaut challenge
 contract GatekeeperThreeScript is Script {
 
     GatekeeperThree public gatekeeper = GatekeeperThree(payable(0x862B3E9b4d5d299DBd45038C9c8e5e3C2F968b41));
